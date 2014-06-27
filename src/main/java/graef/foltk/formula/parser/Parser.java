@@ -42,18 +42,15 @@ public class Parser {
 
 	private Token nextToken() throws IOException, LexerException {
 		t = lexer.next();
-		System.out.println("read: " + t);
+		//System.out.println("read: " + t);
 		return t;
 	}
 
 	private void expect(TokenType expected) throws IOException, LexerException,
 			ParserException {
 		if (t.getType() != expected) {
-			// NOTE: since we know what to expect, we can continue as we would
-			// have read it
-			ParserException e = new ParserException(expected, t);
+			throw new ParserException(expected, t);
 			// System.err.println(e.getMessage());
-			throw e;
 		}
 		nextToken();
 	}
@@ -118,7 +115,9 @@ public class Parser {
 		decl = scope.checkAndPut(decl);
 		
 		Symbol var = new Symbol(tVar, decl.getSymbol());
+		scope = scope.newScope();
 		Proposition proposition = parseProposition();
+		scope = scope.getParent();
 
 		switch (tQuantifier.getType()) {
 		case FORALL:

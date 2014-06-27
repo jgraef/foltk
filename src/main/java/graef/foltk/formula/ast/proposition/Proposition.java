@@ -6,6 +6,9 @@ import graef.foltk.formula.lexer.Token;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
+
+import javax.xml.transform.Transformer;
 
 public abstract class Proposition extends AstNode {
 	private final List<Proposition> operands;

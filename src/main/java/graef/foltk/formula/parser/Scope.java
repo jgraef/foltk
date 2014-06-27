@@ -64,6 +64,10 @@ public class Scope {
 			return decl2;
 		}
 	}
+
+	public Scope newScope() {
+		return new Scope(this);
+	}
 	
 	
 }

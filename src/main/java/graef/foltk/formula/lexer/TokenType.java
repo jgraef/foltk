@@ -2,6 +2,8 @@ package graef.foltk.formula.lexer;
 
 public enum TokenType {
 	EOF,
+	DUMMY,
+	
 	SEMICOLON,
 	COLON,
 	
