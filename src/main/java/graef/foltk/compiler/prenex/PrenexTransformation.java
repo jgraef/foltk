@@ -1,5 +1,10 @@
 package graef.foltk.compiler.prenex;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import graef.foltk.formula.ast.AstNode;
+import graef.foltk.formula.ast.AstVisitor;
 import graef.foltk.formula.ast.proposition.AndProposition;
 import graef.foltk.formula.ast.proposition.BiconditionalProposition;
 import graef.foltk.formula.ast.proposition.ExistentialQuantifiedProposition;
@@ -12,6 +17,7 @@ import graef.foltk.formula.ast.proposition.UniversalQuantifiedProposition;
 import graef.foltk.formula.ast.transform.BaseRecursivePropositionTransformation;
 import graef.foltk.formula.ast.transform.NullTransformation;
 import graef.foltk.formula.ast.transform.Rewriter;
+import graef.foltk.formula.ast.transform.Transformation;
 import graef.foltk.formula.lexer.Token;
 
 /**
@@ -86,86 +92,54 @@ public class PrenexTransformation {
 		}
 	}
 	
-	/* Step 4: move quantifiers outwards */
+	/**
+	 * Step 4: move quantifiers outwards
+	 * remove quantifiers while collecting them.
+	 * This assumes that {@link BaseRecursivePropositionTransformation} actually visits parents
+	 * before their children.
+	 */
 	class PrenexStep4 extends BaseRecursivePropositionTransformation {
-		// TODO: rename variables!
-		// maybe not necessary, since scopes are preserved
+		private final ArrayList<Quantifier> quantifiers = new ArrayList<Quantifier>();
 		
-		private int ai, bi;
-		
-		/**
-		 * @param reversed  If true, move quantifiers in second operator outwards
-		 */
-		public PrenexStep4(boolean reversed) {
-			ai = reversed ? 1 : 0;
-			bi = 1 - ai;
-		}
-		
-		/**
-		 * This transformation actually transforms by moving the quantifier outwards.
-		 * Which operator that has to be moved inwards is specified by overwriting the body method
-		 */
-		abstract class PrenexStep3Part2 extends NullTransformation<Proposition> {
-			protected Proposition b;
-			
-			public PrenexStep3Part2(Proposition b) {
-				this.b = b;
-			}
-			
-			public abstract Proposition body(QuantifiedProposition q);
-			
-			@Override
-			public Proposition transform(Rewriter<Proposition> rewriter, UniversalQuantifiedProposition univ) {
-				return new UniversalQuantifiedProposition(Token.DUMMY, univ.getVariable(), body(univ), univ.getScope());
-			}
-			
-			@Override
-			public Proposition transform(Rewriter<Proposition> rewriter, ExistentialQuantifiedProposition exists) {
-				return new ExistentialQuantifiedProposition(Token.DUMMY, exists.getVariable(), body(exists), exists.getScope());
-			}
+		@Override
+		public Proposition transform(Rewriter<Proposition> rewriter, UniversalQuantifiedProposition univ) {
+			quantifiers.add(new UniversalQuantifier(univ));
+			return univ.getOperand(0);
 		}
 		
 		@Override
-		/**
-		 * Apply transformation for and
-		 */
-		public Proposition transform(final Rewriter<Proposition> rewriter, AndProposition and) {
-			Proposition a = rewriter.rewrite(and.getOperand(ai));
-			Proposition b = rewriter.rewrite(and.getOperand(bi));
-			Rewriter<Proposition> r2 = new Rewriter<>(new PrenexStep3Part2(b) {
-				@Override
-				public Proposition body(QuantifiedProposition q) {
-					return (Proposition)rewriter.rewrite(new AndProposition(Token.DUMMY, q.getOperand(0), b));
-				}
-			});
-			Proposition p = r2.rewrite(a);
-			return p == null ? and : p;
+		public Proposition transform(Rewriter<Proposition> rewriter, ExistentialQuantifiedProposition exists) {
+			quantifiers.add(new ExistentialQuantifier(exists));
+			return exists.getOperand(0);
 		}
 		
-		@Override
-		/**
-		 * Apply transformation for or
-		 */
-		public Proposition transform(final Rewriter<Proposition> rewriter, OrProposition or) {
-			Proposition a = rewriter.rewrite(or.getOperand(ai));
-			Proposition b = rewriter.rewrite(or.getOperand(bi));
-			Rewriter<Proposition> r2 = new Rewriter<>(new PrenexStep3Part2(b) {
-				@Override
-				public Proposition body(QuantifiedProposition q) {
-					return (Proposition)rewriter.rewrite(new OrProposition(Token.DUMMY, q.getOperand(0), b));
-				}
-			});
-			Proposition p = r2.rewrite(a);
-			return p == null ? or : p;
+		public List<Quantifier> getQuantifiers() {
+			return quantifiers;
 		}
 	}
 	
+	
+	private final List<Transformation<Proposition>> steps;
+	private final PrenexStep4 step4;
 	
 	public PrenexTransformation() {
-
+		steps = new ArrayList<>(3);
+		steps.add(new PrenexStep1());
+		steps.add(new PrenexStep2());
+		steps.add(new PrenexStep3());
+		step4 = new PrenexStep4();
 	}
 	
-	public Proposition transform(Proposition p) {
-		throw new UnsupportedOperationException("not yet implemented");
+	public PrenexNormalForm transform(Proposition p) {
+		AstNode node = p;
+		for (Transformation<Proposition> t: steps) {
+			Rewriter<Proposition> r = new Rewriter<>(t);
+			node = r.rewrite(node);
+		}
+		
+		Rewriter<Proposition> r = new Rewriter<>(step4);
+		Proposition matrix = (Proposition)r.rewrite(node);
+		List<Quantifier> quantifiers = step4.getQuantifiers();
+		return new PrenexNormalForm(quantifiers, matrix);
 	}
 }
