@@ -17,68 +17,68 @@ import graef.foltk.formula.ast.term.VariableTerm;
 public class BaseRecursivePropositionTransformation implements Transformation<Proposition> {
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, AndProposition and) {
+	public Proposition transform(Transformer<Proposition> rewriter, AndProposition and) {
 		return new AndProposition(and.getToken(), rewriter.rewrite(and.getOperand(0)), rewriter.rewrite(and.getOperand(1)));
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, OrProposition or) {
+	public Proposition transform(Transformer<Proposition> rewriter, OrProposition or) {
 		return new OrProposition(or.getToken(), rewriter.rewrite(or.getOperand(0)), rewriter.rewrite(or.getOperand(1)));
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, ImplicationProposition impl) {
+	public Proposition transform(Transformer<Proposition> rewriter, ImplicationProposition impl) {
 		return new ImplicationProposition(impl.getToken(), rewriter.rewrite(impl.getOperand(0)), rewriter.rewrite(impl.getOperand(1)));
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, BiconditionalProposition bicond) {
+	public Proposition transform(Transformer<Proposition> rewriter, BiconditionalProposition bicond) {
 		return new BiconditionalProposition(bicond.getToken(), rewriter.rewrite(bicond.getOperand(0)), rewriter.rewrite(bicond.getOperand(1)));
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, ConstantProposition constant) {
+	public Proposition transform(Transformer<Proposition> rewriter, ConstantProposition constant) {
 		return constant;
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter,
+	public Proposition transform(Transformer<Proposition> rewriter,
 			ExistentialQuantifiedProposition exists) {
 		return new ExistentialQuantifiedProposition(exists.getToken(), exists.getVariable(), rewriter.rewrite(exists.getOperand(0)), exists.getScope());
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter,
+	public Proposition transform(Transformer<Proposition> rewriter,
 			UniversalQuantifiedProposition univ) {
 		return new UniversalQuantifiedProposition(univ.getToken(), univ.getVariable(), rewriter.rewrite(univ.getOperand(0)), univ.getScope());
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, NotProposition not) {
+	public Proposition transform(Transformer<Proposition> rewriter, NotProposition not) {
 		return new NotProposition(not.getToken(), not.getOperand(0));
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter,
+	public Proposition transform(Transformer<Proposition> rewriter,
 			PredicateProposition predicate) {
 		return predicate;
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter, Symbol symbol) {
+	public Proposition transform(Transformer<Proposition> rewriter, Symbol symbol) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter,
+	public Proposition transform(Transformer<Proposition> rewriter,
 			FunctionTerm func) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Proposition transform(Rewriter<Proposition> rewriter,
+	public Proposition transform(Transformer<Proposition> rewriter,
 			VariableTerm var) {
 		// TODO Auto-generated method stub
 		return null;

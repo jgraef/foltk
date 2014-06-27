@@ -15,63 +15,63 @@ import graef.foltk.formula.ast.term.VariableTerm;
 
 public class NullTransformation<T> implements Transformation<T> {
 	@Override
-	public T transform(Rewriter<T> rewriter, Symbol symbol) {
+	public T transform(Transformer<T> rewriter, Symbol symbol) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, AndProposition and) {
+	public T transform(Transformer<T> rewriter, AndProposition and) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, OrProposition or) {
+	public T transform(Transformer<T> rewriter, OrProposition or) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, ImplicationProposition impl) {
+	public T transform(Transformer<T> rewriter, ImplicationProposition impl) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, BiconditionalProposition bicond) {
+	public T transform(Transformer<T> rewriter, BiconditionalProposition bicond) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, ConstantProposition constant) {
+	public T transform(Transformer<T> rewriter, ConstantProposition constant) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter,
+	public T transform(Transformer<T> rewriter,
 			ExistentialQuantifiedProposition exists) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, UniversalQuantifiedProposition univ) {
+	public T transform(Transformer<T> rewriter, UniversalQuantifiedProposition univ) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, NotProposition not) {
+	public T transform(Transformer<T> rewriter, NotProposition not) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, PredicateProposition predicate) {
+	public T transform(Transformer<T> rewriter, PredicateProposition predicate) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, FunctionTerm func) {
+	public T transform(Transformer<T> rewriter, FunctionTerm func) {
 		return null;
 	}
 
 	@Override
-	public T transform(Rewriter<T> rewriter, VariableTerm var) {
+	public T transform(Transformer<T> rewriter, VariableTerm var) {
 		return null;
 	}
 

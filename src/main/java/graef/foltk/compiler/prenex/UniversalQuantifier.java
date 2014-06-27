@@ -14,4 +14,7 @@ public class UniversalQuantifier extends Quantifier {
 		super(var, scope);
 	}
 
+	public String toString() {
+		return "forall " + getVariable().toString();
+	}
 }

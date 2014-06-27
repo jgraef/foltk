@@ -1,6 +1,7 @@
 package graef.foltk.formula;
 
 public class Location {
+	public static final Location NONE = new Location("<none>", 0, 0);
 	private final String name;
 	private final int line;
 	private final int col;

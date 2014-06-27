@@ -1,6 +1,7 @@
 package graef.foltk.compiler.prenex;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import graef.foltk.formula.ast.proposition.Proposition;
@@ -22,5 +23,13 @@ public class PrenexNormalForm {
 		return matrix;
 	}
 	
-	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Quantifier q: quantifiers) {
+			sb.append(q.toString());
+			sb.append(" ");
+		}
+		sb.append(matrix.toString());
+		return sb.toString();
+	}
 }

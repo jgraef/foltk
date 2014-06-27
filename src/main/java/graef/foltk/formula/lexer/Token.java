@@ -4,8 +4,6 @@ import graef.foltk.formula.Location;
 
 
 public class Token {
-	public static final Token DUMMY = new Token(new Location("<dummy>", 0, 0), TokenType.DUMMY, "<dummy>");
-	
 	private final Location loc;
 	private final TokenType type;
 	private final String str;
@@ -14,6 +12,10 @@ public class Token {
 		this.loc = loc;
 		this.type = type;
 		this.str = str;
+	}
+	
+	public Token(TokenType type, String str) {
+		this(Location.NONE, type, str);
 	}
 	
 	public Token(Location loc, TokenType type, int cp) {

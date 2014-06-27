@@ -14,4 +14,7 @@ public class ExistentialQuantifier extends Quantifier {
 		super(variable, scope);
 	}
 
+	public String toString() {
+		return "exists " + getVariable().toString();
+	}
 }

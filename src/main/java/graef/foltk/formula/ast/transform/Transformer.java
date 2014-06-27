@@ -18,80 +18,80 @@ import graef.foltk.formula.ast.term.VariableTerm;
 
 import java.util.LinkedList;
 
-public class Rewriter<T> {
+public class Transformer<T> {
 	private final Transformation<T> transformation;
 	private final LinkedList<T> stack;
 	private final AstVisitor visitor;
 	
-	class RewriteVisitor implements AstVisitor {
+	class TransformerVisitor implements AstVisitor {
 
 		@Override
 		public void visit(Symbol symbol) {
-			stack.push(transformation.transform(Rewriter.this, symbol));
+			stack.push(transformation.transform(Transformer.this, symbol));
 		}
 
 		@Override
 		public void visit(AndProposition and) {
-			stack.push(transformation.transform(Rewriter.this, and));
+			stack.push(transformation.transform(Transformer.this, and));
 		}
 
 		@Override
 		public void visit(OrProposition or) {
-			stack.push(transformation.transform(Rewriter.this, or));			
+			stack.push(transformation.transform(Transformer.this, or));			
 		}
 
 		@Override
 		public void visit(ImplicationProposition impl) {
-			stack.push(transformation.transform(Rewriter.this, impl));			
+			stack.push(transformation.transform(Transformer.this, impl));			
 		}
 
 		@Override
 		public void visit(BiconditionalProposition bicond) {
-			stack.push(transformation.transform(Rewriter.this, bicond));			
+			stack.push(transformation.transform(Transformer.this, bicond));			
 		}
 
 		@Override
 		public void visit(ConstantProposition constant) {
-			stack.push(transformation.transform(Rewriter.this, constant));
+			stack.push(transformation.transform(Transformer.this, constant));
 		}
 
 		@Override
 		public void visit(ExistentialQuantifiedProposition exists) {
-			stack.push(transformation.transform(Rewriter.this, exists));
+			stack.push(transformation.transform(Transformer.this, exists));
 		}
 
 		@Override
 		public void visit(UniversalQuantifiedProposition univ) {
-			stack.push(transformation.transform(Rewriter.this, univ));			
+			stack.push(transformation.transform(Transformer.this, univ));			
 		}
 
 		@Override
 		public void visit(NotProposition not) {
-			stack.push(transformation.transform(Rewriter.this, not));
+			stack.push(transformation.transform(Transformer.this, not));
 		}
 
 		@Override
 		public void visit(PredicateProposition predicate) {
-			stack.push(transformation.transform(Rewriter.this, predicate));
+			stack.push(transformation.transform(Transformer.this, predicate));
 		}
 
 		@Override
 		public void visit(FunctionTerm func) {
-			stack.push(transformation.transform(Rewriter.this, func));
+			stack.push(transformation.transform(Transformer.this, func));
 		}
 
 		@Override
 		public void visit(VariableTerm var) {
-			stack.push(transformation.transform(Rewriter.this, var));
+			stack.push(transformation.transform(Transformer.this, var));
 		}
 		
 	}
 	
 	
-	public Rewriter(Transformation<T> transformation) {
+	public Transformer(Transformation<T> transformation) {
 		this.transformation = transformation;
 		stack = new LinkedList<>();
-		visitor = new RewriteVisitor();
+		visitor = new TransformerVisitor();
 	}
 	
 	public T rewrite(AstNode node) {
