@@ -38,8 +38,6 @@ public class SkolemTransformation {
 		
 		@Override
 		public Term transform(Transformer<Term> transformer, VariableTerm var) {
-			System.out.println("skolemizing variable " + exist.getVariable());
-			System.out.println("found variable: " + var);
 			if (var.getSymbol().equals(exist.getVariable())) {
 				Token t = new Token(TokenType.SYMBOL, functionName);
 				List<Term> depVars = new ArrayList<>();
@@ -79,15 +77,12 @@ public class SkolemTransformation {
 		
 		@Override
 		public void visit(ExistentialQuantifier exists) {
-			System.out.println("found existential quantifier: " + exists + " " + matrix);
 			Transformer<Proposition> r = new Transformer<>(new PropositionTransformation(universal, exists));
 			matrix = r.rewrite(matrix);
-			System.out.println("rewrote matrix to: " + matrix);
 		}
 
 		@Override
 		public void visit(UniversalQuantifier univ) {
-			System.out.println("found universal quantifier: " + univ);
 			universal.add(univ);
 		}
 		
@@ -108,9 +103,7 @@ public class SkolemTransformation {
 	
 	public SkolemNormalForm transform(PrenexNormalForm pnf) {
 		VisitQuantifiers vq = new VisitQuantifiers(pnf.getMatrix());
-		System.out.println("Prenex Normal Form: " + pnf.getMatrix());
 		for (Quantifier q: pnf.getQuantifiers()) {
-			System.out.println("> " + q);
 			q.accept(vq);
 		}
 		return new SkolemNormalForm(vq.getUniversalQuantifiers(), vq.getMatrix());
