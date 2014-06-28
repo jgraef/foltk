@@ -1,13 +1,15 @@
 package graef.foltk.formula.ast;
 
 import graef.foltk.formula.lexer.Lexer;
+import graef.foltk.formula.lexer.Token;
 
 public class Declaration {
+	private final Symbol firstOccurence;
 	private final String symbol;
 	private final SymbolType type;
 	private final int arity;
 	
-	public Declaration(String symbol, SymbolType type, int arity) {
+	public Declaration(Symbol firstOccurence, String symbol, SymbolType type, int arity) {
 		if (arity < 0) {
 			throw new IllegalArgumentException("arity < 0");
 		}
@@ -17,9 +19,19 @@ public class Declaration {
 		else if (type == SymbolType.VARIABLE && arity > 0) {
 			throw new IllegalArgumentException("variable with arity > 0");
 		}
+		
+		this.firstOccurence = firstOccurence;
 		this.symbol = symbol;
 		this.type = type;
 		this.arity = arity;
+	}
+	
+	public Declaration(String symbol, SymbolType type, int arity) {
+		this(null, symbol, type, arity);
+	}
+	
+	public Symbol getFirstOccurence() {
+		return this.firstOccurence;
 	}
 	
 	public String getSymbol() {

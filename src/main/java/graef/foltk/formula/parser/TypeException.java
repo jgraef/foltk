@@ -2,6 +2,13 @@ package graef.foltk.formula.parser;
 
 import graef.foltk.formula.ast.Declaration;
 
+
+/**
+ * @todo produce fancy error message. we know the first occurence of a symbol by looking at 
+ * {@link Declaration}.getFirstOccurence()
+ * @author janosch
+ *
+ */
 public class TypeException extends Exception {
 	/**
 	 * 

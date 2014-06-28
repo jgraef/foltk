@@ -128,9 +128,9 @@ public class Parser {
 		}
 		
 		scope = scope.newScope();
-		Declaration decl = new Declaration(tVar.toString(), SymbolType.VARIABLE, 0);
+		Symbol var = new Symbol(tVar, tVar.toString());
+		Declaration decl = new Declaration(var, tVar.toString(), SymbolType.VARIABLE, 0);
 		decl = scope.checkAndPut(decl);
-		Symbol var = new Symbol(tVar, decl.getSymbol());
 		Proposition proposition = parseProposition();
 
 		QuantifiedProposition qp;
@@ -157,10 +157,10 @@ public class Parser {
 		nextToken();
 		List<Term> terms = parseTermList();
 
-		Declaration decl = new Declaration(tSymbol.toString(), SymbolType.PREDICATE, terms.size());
+		Symbol symbol = new Symbol(tSymbol, tSymbol.toString());
+		Declaration decl = new Declaration(symbol, tSymbol.toString(), SymbolType.PREDICATE, terms.size());
 		decl = scope.checkAndPut(decl);
 		
-		Symbol symbol = new Symbol(tSymbol, decl.getSymbol());
 		return new PredicateProposition(symbol.getToken(), symbol, terms);
 	}
 
@@ -221,9 +221,10 @@ public class Parser {
 		if (decl == null || decl.getType() == SymbolType.FUNCTION) {
 			List<Term> terms = parseTermList();
 			String name = decl != null ? decl.getSymbol() : tSymbol.toString();
-			Declaration decl2 = new Declaration(name, SymbolType.FUNCTION, terms.size());
+			Symbol symbol = new Symbol(tSymbol, name);
+			Declaration decl2 = new Declaration(symbol, name, SymbolType.FUNCTION, terms.size());
 			decl = scope.checkAndPut(decl2);
-			return new FunctionTerm(tSymbol, new Symbol(tSymbol, name), terms);
+			return new FunctionTerm(tSymbol, symbol, terms);
 		}
 		else if (decl.getType() == SymbolType.VARIABLE) {
 			return new VariableTerm(tSymbol, new Symbol(tSymbol, decl.getSymbol()));
