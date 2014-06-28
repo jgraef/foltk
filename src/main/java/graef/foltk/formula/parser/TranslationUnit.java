@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class TranslationUnit {
-	private List<Proposition> propositions;
-	private List<Import> imports;
-	private Scope rootScope;
+	private final List<Proposition> propositions;
+	private final List<Import> imports;
+	private final Scope rootScope;
 	
 	public TranslationUnit(List<Proposition> propositions,
 			List<Import> imports, Scope rootScope) {

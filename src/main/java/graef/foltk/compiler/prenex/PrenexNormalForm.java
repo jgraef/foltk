@@ -7,8 +7,8 @@ import java.util.List;
 import graef.foltk.formula.ast.proposition.Proposition;
 
 public class PrenexNormalForm {
-	private List<Quantifier> quantifiers;
-	private Proposition matrix;
+	private final List<Quantifier> quantifiers;
+	private final Proposition matrix;
 
 	public PrenexNormalForm(List<Quantifier> quantifiers, Proposition matrix) {
 		this.quantifiers = quantifiers;

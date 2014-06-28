@@ -4,8 +4,8 @@ import graef.foltk.formula.ast.Symbol;
 import graef.foltk.formula.parser.Scope;
 
 public abstract class Quantifier {
-	private Symbol var;
-	private Scope scope;
+	private final Symbol var;
+	private final Scope scope;
 	
 	public Quantifier(Symbol var, Scope scope) {
 		this.var = var;

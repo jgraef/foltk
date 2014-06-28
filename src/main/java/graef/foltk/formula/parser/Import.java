@@ -5,7 +5,7 @@ import graef.foltk.formula.ast.AstVisitor;
 import graef.foltk.formula.lexer.Token;
 
 public class Import extends AstNode {
-	private String unitName;
+	private final String unitName;
 	
 	public Import(Token token, String unitName) {
 		super(token);

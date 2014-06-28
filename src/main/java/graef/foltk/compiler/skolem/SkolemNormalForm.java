@@ -1,9 +1,12 @@
 package graef.foltk.compiler.skolem;
 
-import graef.foltk.compiler.prenex.Quantifier;
 import graef.foltk.compiler.prenex.UniversalQuantifier;
+import graef.foltk.formula.ast.proposition.AndProposition;
 import graef.foltk.formula.ast.proposition.Proposition;
+import graef.foltk.formula.lexer.Token;
+import graef.foltk.formula.lexer.TokenType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SkolemNormalForm {
@@ -21,6 +24,13 @@ public class SkolemNormalForm {
 
 	public Proposition getMatrix() {
 		return matrix;
+	}
+	
+	public SkolemNormalForm join(SkolemNormalForm other) {
+		List<UniversalQuantifier> quantifiers = new ArrayList<>(this.quantifiers);
+		quantifiers.addAll(other.getQuantifiers());
+		Proposition matrix = new AndProposition(new Token(TokenType.AND, "&"), this.matrix, other.getMatrix());
+		return new SkolemNormalForm(quantifiers, matrix);
 	}
 	
 	public String toString() {
