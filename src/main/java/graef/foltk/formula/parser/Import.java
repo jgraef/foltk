@@ -9,6 +9,7 @@ public class Import extends AstNode {
 	
 	public Import(Token token, String unitName) {
 		super(token);
+		this.unitName = unitName;
 	}
 
 	public String toString() {
