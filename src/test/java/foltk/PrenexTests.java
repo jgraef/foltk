@@ -19,21 +19,19 @@ import java.io.StringReader;
 import org.junit.Test;
 
 public class PrenexTests {
-	private Proposition parse(String code) throws IOException, LexerException, ParserException, TypeException {
-		Lexer lexer = new Lexer("test", new StringReader(code));
-		Parser parser = new Parser(lexer);
-		return parser.parseProposition();
-	}
-	
-	private PrenexNormalForm transform(String code) throws IOException, LexerException, ParserException, TypeException {
-		Proposition prop = parse(code);
-		return PrenexTransformation.INSTANCE.transform(prop);
-	}
-	
 	@Test
 	public void testSimple() throws IOException, LexerException, ParserException, TypeException {
 		String code = "!((forall x P(x)) & (exists y Q(y)))";
-		PrenexNormalForm pnf = transform(code);
+		PrenexNormalForm pnf = TestUtils.parseToPrenex(code);
+		assertEquals("(!(P(x))) | (!(Q(y)))", pnf.getMatrix().toString());
 		assertEquals("exists x forall y (!(P(x))) | (!(Q(y)))", pnf.toString());
+	}
+	
+	@Test
+	public void testSimple2() throws IOException, LexerException, ParserException, TypeException {
+		String code = "forall x exists y P(x, y)";
+		PrenexNormalForm pnf = TestUtils.parseToPrenex(code);
+		assertEquals("P(x, y)", pnf.getMatrix().toString());
+		assertEquals("forall x exists y P(x, y)", pnf.toString());
 	}
 }

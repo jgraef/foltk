@@ -17,4 +17,8 @@ public class UniversalQuantifier extends Quantifier {
 	public String toString() {
 		return "forall " + getVariable().toString();
 	}
+	
+	public void accept(QuantorVisitor visitor) {
+		visitor.visit(this);
+	}
 }

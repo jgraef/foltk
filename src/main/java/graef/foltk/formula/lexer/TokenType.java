@@ -4,6 +4,9 @@ public enum TokenType {
 	EOF,
 	DUMMY,
 	
+	IMPORT,
+	STRING,
+	
 	SEMICOLON,
 	COLON,
 	

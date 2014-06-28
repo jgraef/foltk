@@ -23,8 +23,6 @@ import graef.foltk.formula.lexer.Token;
 
 
 public class PrenexTransformation {
-	public static final PrenexTransformation INSTANCE = new PrenexTransformation();
-	
 	/**
 	 * Step 4: move quantifiers outwards
 	 * remove quantifiers while collecting them.
@@ -37,13 +35,13 @@ public class PrenexTransformation {
 		@Override
 		public Proposition transform(Transformer<Proposition> rewriter, UniversalQuantifiedProposition univ) {
 			quantifiers.add(new UniversalQuantifier(univ));
-			return univ.getOperand(0);
+			return rewriter.rewrite(univ.getOperand(0));
 		}
 		
 		@Override
 		public Proposition transform(Transformer<Proposition> rewriter, ExistentialQuantifiedProposition exists) {
 			quantifiers.add(new ExistentialQuantifier(exists));
-			return exists.getOperand(0);
+			return rewriter.rewrite(exists.getOperand(0));
 		}
 		
 		public List<Quantifier> getQuantifiers() {

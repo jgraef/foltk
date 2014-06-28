@@ -2,9 +2,9 @@ package graef.foltk.formula.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import graef.foltk.formula.ast.Declaration;
 import graef.foltk.formula.ast.Symbol;
 import graef.foltk.formula.ast.SymbolType;
@@ -17,6 +17,7 @@ import graef.foltk.formula.ast.proposition.NotProposition;
 import graef.foltk.formula.ast.proposition.OrProposition;
 import graef.foltk.formula.ast.proposition.PredicateProposition;
 import graef.foltk.formula.ast.proposition.Proposition;
+import graef.foltk.formula.ast.proposition.QuantifiedProposition;
 import graef.foltk.formula.ast.proposition.UniversalQuantifiedProposition;
 import graef.foltk.formula.ast.term.FunctionTerm;
 import graef.foltk.formula.ast.term.Term;
@@ -46,23 +47,37 @@ public class Parser {
 		return t;
 	}
 
-	private void expect(TokenType expected) throws IOException, LexerException,
+	private Token expect(TokenType expected) throws IOException, LexerException,
 			ParserException {
+		Token tGot = t;
 		if (t.getType() != expected) {
 			throw new ParserException(expected, t);
 			// System.err.println(e.getMessage());
 		}
 		nextToken();
+		return tGot;
 	}
-
-	public List<Proposition> parseUnit() throws IOException, LexerException,
-			ParserException, TypeException {
+	
+	public TranslationUnit parseTranslationUnit() throws IOException, LexerException, ParserException, TypeException {
 		List<Proposition> propositions = new ArrayList<>();
+		List<Import> imports = new ArrayList<>();
+		
 		while (t.getType() != TokenType.EOF) {
-			propositions.add(parseProposition());
+			switch (t.getType()) {
+			case IMPORT:
+				Token tImport = t;
+				String name = expect(TokenType.STRING).toString();
+				imports.add(new Import(tImport, name));
+				break;
+			default:
+				propositions.add(parseProposition());
+				break;
+			}
+				
 			expect(TokenType.SEMICOLON);
 		}
-		return propositions;
+		
+		return new TranslationUnit(propositions, imports, rootScope);
 	}
 
 	public Proposition parseProposition() throws ParserException, IOException,
@@ -111,24 +126,29 @@ public class Parser {
 		if (tVar.getType() != TokenType.SYMBOL) {
 			throw new ParserException(TokenType.SYMBOL, tVar);
 		}
+		
+		scope = scope.newScope();
 		Declaration decl = new Declaration(tVar.toString(), SymbolType.VARIABLE, 0);
 		decl = scope.checkAndPut(decl);
-		
 		Symbol var = new Symbol(tVar, decl.getSymbol());
-		scope = scope.newScope();
 		Proposition proposition = parseProposition();
-		scope = scope.getParent();
 
+		QuantifiedProposition qp;
 		switch (tQuantifier.getType()) {
 		case FORALL:
-			return new UniversalQuantifiedProposition(tQuantifier, var,
+			qp = new UniversalQuantifiedProposition(tQuantifier, var,
 					proposition, scope);
+			break;
 		case EXISTS:
-			return new ExistentialQuantifiedProposition(tQuantifier, var,
+			qp = new ExistentialQuantifiedProposition(tQuantifier, var,
 					proposition, scope);
+			break;
 		default:
 			throw new ParserException(tQuantifier);
 		}
+		
+		scope = scope.getParent();
+		return qp;
 	}
 
 	private Proposition parsePredicate() throws IOException, LexerException,
@@ -198,15 +218,18 @@ public class Parser {
 		expect(TokenType.SYMBOL);
 		
 		Declaration decl = scope.lookup(tSymbol.toString());
-		if (decl != null && decl.getType() == SymbolType.VARIABLE) {
-			return new VariableTerm(tSymbol, new Symbol(tSymbol, decl.getSymbol()));
-		}
-		else {
+		if (decl == null || decl.getType() == SymbolType.FUNCTION) {
 			List<Term> terms = parseTermList();
 			String name = decl != null ? decl.getSymbol() : tSymbol.toString();
 			Declaration decl2 = new Declaration(name, SymbolType.FUNCTION, terms.size());
 			decl = scope.checkAndPut(decl2);
 			return new FunctionTerm(tSymbol, new Symbol(tSymbol, name), terms);
+		}
+		else if (decl.getType() == SymbolType.VARIABLE) {
+			return new VariableTerm(tSymbol, new Symbol(tSymbol, decl.getSymbol()));
+		}
+		else {
+			throw new TypeException(decl);
 		}
 	}
 
@@ -227,8 +250,12 @@ public class Parser {
 		}
 		return terms;
 	}
-
-	public Collection<Declaration> getDeclarations() {
-		return null; // FIXME
+	
+	public Scope getScope() {
+		return scope;
+	}
+	
+	public Scope getRootScope() {
+		return rootScope;
 	}
 }

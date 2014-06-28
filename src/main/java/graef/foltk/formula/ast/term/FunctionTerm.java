@@ -13,7 +13,7 @@ public class FunctionTerm extends Term {
 	private Symbol symbol;
 	private List<Term> arguments;
 	
-	public FunctionTerm(Token token, Symbol symbol, List<Term> terms) {
+	public FunctionTerm(Token token, Symbol symbol, List<? extends Term> terms) {
 		super(token);
 		this.symbol = symbol;
 		this.arguments = new ArrayList<Term>(terms);

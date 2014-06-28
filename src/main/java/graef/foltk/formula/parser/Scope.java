@@ -3,6 +3,8 @@ package graef.foltk.formula.parser;
 import graef.foltk.formula.ast.Declaration;
 import graef.foltk.formula.ast.SymbolType;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ public class Scope {
 	
 	public Declaration lookup(String symbol) {
 		Declaration decl = declarations.get(symbol);
-		if (decl == null) {
+		if (decl != null) {
 			return decl;
 		}
 		else if (parent != null) {
@@ -67,6 +69,10 @@ public class Scope {
 
 	public Scope newScope() {
 		return new Scope(this);
+	}
+
+	public Collection<Declaration> getDeclarations() {
+		return Collections.unmodifiableCollection(declarations.values());
 	}
 	
 	

@@ -15,8 +15,12 @@ import graef.foltk.formula.ast.proposition.Proposition;
 import graef.foltk.formula.ast.proposition.UniversalQuantifiedProposition;
 import graef.foltk.formula.ast.term.FunctionTerm;
 import graef.foltk.formula.ast.term.VariableTerm;
+import graef.foltk.formula.parser.Import;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class Transformer<T> {
 	private final Transformation<T> transformation;
@@ -84,6 +88,10 @@ public class Transformer<T> {
 		public void visit(VariableTerm var) {
 			stack.push(transformation.transform(Transformer.this, var));
 		}
+
+		@Override
+		public void visit(Import imprt) {
+		}
 		
 	}
 	
@@ -94,9 +102,17 @@ public class Transformer<T> {
 		visitor = new TransformerVisitor();
 	}
 	
-	public T rewrite(AstNode node) {
+	public synchronized T rewrite(AstNode node) {
 		node.accept(visitor);
 		return stack.pop();
+	}
+	
+	public List<T> rewriteList(List<? extends AstNode> nodes) {
+		List<T> rnodes = new ArrayList<T>(nodes.size());
+		for (AstNode n: nodes) {
+			rnodes.add(rewrite(n));
+		}
+		return rnodes;
 	}
 
 }

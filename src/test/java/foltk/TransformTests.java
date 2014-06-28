@@ -20,15 +20,9 @@ import graef.foltk.formula.parser.TypeException;
 import org.junit.Test;
 
 public class TransformTests {
-	private Proposition parse(String code) throws IOException, LexerException, ParserException, TypeException {
-		Lexer lexer = new Lexer("test", new StringReader(code));
-		Parser parser = new Parser(lexer);
-		return parser.parseProposition();
-	}
-	
 	private Proposition rewrite(Transformation<Proposition> transformation, String code) throws IOException, LexerException, ParserException, TypeException {
 		Transformer<Proposition> transformer = new Transformer<>(transformation);
-		return transformer.rewrite(parse(code));
+		return transformer.rewrite(TestUtils.parse(code));
 	}
 	
 	@Test

@@ -19,4 +19,6 @@ public abstract class Quantifier {
 	public Symbol getVariable() {
 		return var;
 	}
+	
+	public abstract void accept(QuantorVisitor visitor);
 }

@@ -17,4 +17,8 @@ public class ExistentialQuantifier extends Quantifier {
 	public String toString() {
 		return "exists " + getVariable().toString();
 	}
+	
+	public void accept(QuantorVisitor visitor) {
+		visitor.visit(this);
+	}
 }

@@ -14,6 +14,7 @@ import graef.foltk.formula.ast.proposition.QuantifiedProposition;
 import graef.foltk.formula.ast.proposition.UniversalQuantifiedProposition;
 import graef.foltk.formula.ast.term.FunctionTerm;
 import graef.foltk.formula.ast.term.VariableTerm;
+import graef.foltk.formula.parser.Import;
 
 public interface AstVisitor {
 	public void visit(Symbol symbol);
@@ -28,4 +29,5 @@ public interface AstVisitor {
 	public void visit(PredicateProposition predicate);
 	public void visit(FunctionTerm func);
 	public void visit(VariableTerm var);
+	public void visit(Import imprt);
 }
