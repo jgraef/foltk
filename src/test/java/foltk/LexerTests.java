@@ -136,4 +136,22 @@ public class LexerTests {
 		Token t2 = l.next();
 		assertSame(t1.toString(), t2.toString());
 	}
+	
+	@Test
+	public void testSingleLineComment() throws IOException, LexerException {
+		String s = "& // foo \n !";
+		Lexer l = new Lexer("test", new StringReader(s));
+		assertEquals(TokenType.AND, l.next().getType());
+		assertEquals(TokenType.NOT, l.next().getType());
+		assertEquals(TokenType.EOF, l.next().getType());
+	}
+	
+	@Test
+	public void testMultiLineComment() throws IOException, LexerException {
+		String s = "& /* foo \n ! \n Lassie */ |";
+		Lexer l = new Lexer("test", new StringReader(s));
+		assertEquals(TokenType.AND, l.next().getType());
+		assertEquals(TokenType.OR, l.next().getType());
+		assertEquals(TokenType.EOF, l.next().getType());
+	}
 }

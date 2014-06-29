@@ -25,10 +25,6 @@ public class Lexer {
 		keywords.put("false", TokenType.FALSE);
 		keywords.put("forall", TokenType.FORALL);
 		keywords.put("exists", TokenType.EXISTS);
-		/*keywords.put("pred", TokenType.PREDICATE_DECL);
-		keywords.put("var", TokenType.VARIABLE_DECL);
-		keywords.put("func", TokenType.FUNCTION_DECL);
-		keywords.put("const", TokenType.CONSTANT_DECL);*/
 	}
 
 	public Lexer(String name, InputStream in)
@@ -113,8 +109,16 @@ public class Lexer {
 		
 		return sb.toString();
 	}
-
+	
 	public Token next() throws IOException, LexerException {
+		Token t = null;
+		do {
+			t = tryNext();
+		} while (t == null);
+		return t;
+	}
+
+	private Token tryNext() throws IOException, LexerException {
 		skipWhitespace();
 
 		int fc = c;
@@ -170,6 +174,23 @@ public class Lexer {
 			expect('=');
 			expect('>');
 			return new Token(loc, TokenType.BICOND, "<=>");
+		case '/':
+			switch (nextChar()) {
+			case '/':
+				// single-line comment
+				do {
+					nextChar();
+				} while (c != '\n' && c != -1);
+				nextChar();
+				break;
+			case '*':
+				/* multi-line
+				 * comment
+				 */
+				while ((nextChar() != '*' || nextChar() != '/') && c != -1);
+				nextChar();
+			}
+			return null;
 		default:
 			throw new LexerException(c, loc);
 		}
